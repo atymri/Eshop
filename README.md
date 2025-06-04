@@ -64,8 +64,3 @@ Eshop/
 
 Feel free to fork the project, make changes, and send a pull request. Whether it’s a small fix or a big feature, we’d love to see it.
 
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
