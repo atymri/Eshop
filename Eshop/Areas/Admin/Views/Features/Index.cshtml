@@ -1,0 +1,95 @@
+﻿@{
+    ViewBag.Title = "مدیریت ویژگی ها";
+}
+
+<h2>ویژگی ها</h2>
+
+
+<div class="btn btn-success" onclick="Add()">افزودن ویژگی جدید</div>
+
+<div id="List">
+    @Html.Action("ShowList")
+
+</div>
+
+@*<p>
+        @Html.ActionLink("Create New", "Create")
+    </p>*@
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+
+            </div>
+            <div class="modal-body" id="exampleModalBody">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function Add() {
+        $.get("@Url.Action("Create", "Features")",
+            function(res) {
+                $("#exampleModalLabel").html('افزودن ویژگی جدید');
+                $("#exampleModalBody").html(res);
+                $("#exampleModal").modal();
+            });
+    }
+
+    function Success() {
+        $("#exampleModal").modal('hide');
+    }
+
+    function DeleteGroupFeature(groupID) {
+        //$.get("/Admin/Features/Delete?G=" + groupID,
+        //    function (res) {
+        //        $("#group_"+groupID).hide('fast');
+        //    });
+
+        Swal.fire({
+            title: 'از حذف تمام ویژگی های گروه اطمینان دارید؟',
+            //text: 'تمامی زیر گروه ها نیز حذف خواهند شد',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'بله',
+            cancelButtonText: 'لغو',
+            customClass: {
+                confirmButton: 'btn btn-danger',
+                cancelButton: 'btn btn-secondary'
+            },
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.get('/Admin/Features/Delete?G=' + groupID, function() {
+                    $("#group_" + groupID).hide('fast');
+                    Swal.fire({
+                        title: 'حذف شد!',
+                        text: 'ویژگی های با موفقیت حذف شدند.',
+                        icon: 'success',
+                        confirmButtonText: 'باشه'
+                    });
+                });
+            }
+        });
+    }
+
+    function DeleteSingleFeature(featureID) {
+        $.get("/Admin/Features/Delete?F=" + featureID,
+            function(res) {
+                $("#feature_" + featureID).hide('fast');
+            });
+    }
+
+    function DeleleteNonFeaturedGroup(groupID) {
+        $("#group_" + groupID).hide('slow');
+    }
+</script>

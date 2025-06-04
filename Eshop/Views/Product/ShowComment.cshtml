@@ -1,0 +1,50 @@
+﻿@using Eshop.Utilities
+@model IEnumerable<DataLayer.ProductComments>
+
+
+@if (!Model.Any())
+{
+    <div class="alert alert-danger">
+        نظری درباره این محصول وجود ندارد! اولین شخصی باشید که نظر خود را درباره این محصول مینویسد
+    </div>
+}
+@foreach (var item in Model.Where(m => m.ParentID == null))
+{
+    <li>
+        <a onclick="Reply(@item.CommentID, '@item.Name')" class="btn reply-button">پاسخ</a>
+
+        <img src="/Content/img/avatar.jpg" width="65">
+        <div>
+           
+            
+            <h5>ارسال شده از : @item.Name در تاریخ : @item.CreateDate.Date.ToShamsi() </h5>
+            <p>
+                @item.CommentText
+            </p>
+
+        </div>
+        <div class="clearfix"></div>
+
+        @if (Model.Any(m => m.ParentID == item.CommentID))
+        {
+            <ul>
+                @foreach (var item2 in Model.Where(m => m.ParentID == item.CommentID))
+                {
+                    <li>
+
+                        <img src="/Content/img/avatar.jpg" width="65">
+                        <div>
+                            <h5>ارسال شده از : @item2.Name در تاریخ : @item2.CreateDate.Date.ToShamsi() </h5>
+                            <p>
+                                @item2.CommentText
+                            </p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </li>
+                }
+
+            </ul>
+        }
+    </li>
+}
+

@@ -1,0 +1,167 @@
+﻿@model Eshop.ViewModels.VisitsViewModel
+
+@{
+    ViewBag.Title = "پنل مدیریت";
+}
+
+@section Style{
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card-header {
+            background-color: #343a40;
+            padding: 8px;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .card {
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            padding: 12px;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            }
+
+        .card-body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px; 
+        }
+
+        .card-title {
+            margin: 0;
+        }
+
+        .btn {
+            border-radius: 25px;
+            padding: 10px 20px;
+            margin: 5px;
+        }
+
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 500px;
+            margin-top: 30px;
+        }
+
+            .chart-container canvas {
+                max-width: 600px;
+                width: 100%;
+            }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">پنل مدیریت سایت</h2>
+
+    <hr class="mb-4" />
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white mb-3">
+                <div class="card-header">بازدید های امروز</div>
+                <div class="card-body">
+                    <h5 class="card-title display-4">@Model.TodayVisits</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-dark mb-3">
+                <div class="card-header">بازدید های دیروز</div>
+                <div class="card-body">
+                    <h5 class="card-title display-4">@Model.YesterDayVisits</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white mb-3">
+                <div class="card-header">بازدید های تمام دوران</div>
+                <div class="card-body">
+                    <h5 class="card-title display-4">@Model.AllTimeVisits</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr/>
+
+    <div class="text-center mb-4">
+        <button id="barChartBtn" class="btn btn-primary">نمودار ستونی</button>
+        <button id="pieChartBtn" class="btn btn-secondary">نمودار دایره‌ای</button>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="visitsChart"></canvas>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    var ctx = document.getElementById('visitsChart').getContext('2d');
+    var currentChart;
+
+    function createChart(type) {
+        if (currentChart) {
+            currentChart.destroy();
+        }
+
+        currentChart = new Chart(ctx, {
+            type: type,
+            data: {
+                labels: ['بازدید های امروز', 'بازدید های دیروز', 'بازدید های تمام دوران'],
+                datasets: [{
+                    label: 'تعداد بازدید',
+                    data: [@Model.TodayVisits, @Model.YesterDayVisits, @Model.AllTimeVisits],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    createChart('bar');
+
+    document.getElementById('barChartBtn').addEventListener('click', function () {
+        createChart('bar');
+    });
+
+    document.getElementById('pieChartBtn').addEventListener('click', function () {
+        createChart('pie');
+    });
+</script>

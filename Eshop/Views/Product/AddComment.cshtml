@@ -1,0 +1,38 @@
+﻿@model DataLayer.ProductComments
+
+
+@using (Ajax.BeginForm("AddComment", "Product", FormMethod.Post, new AjaxOptions()
+{
+    OnSuccess = "SuccessComment",
+    UpdateTargetId = "CommentsList"
+}))
+{
+    @Html.HiddenFor(m=>m.ProductID)
+    @Html.HiddenFor(m=>m.ParentID)
+
+    <div class="col-md-5">
+        <div class="form-group">
+            @Html.TextBoxFor(m=>m.Name, new {@class="form-control", placeholder="نام و نام خانوادگی", id="Name"})
+            @Html.ValidationMessageFor(m=>m.Name, "", new {@class="text-danger"})
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(m=>m.Email, new {@class="form-control", placeholder="ایمیل", id="Email"})
+
+            @Html.ValidationMessageFor(m=>m.Email, "", new {@class="text-danger"})
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(m=>m.Website, new {@class="form-control", placeholder="وبسایت", id="Website"})
+
+        </div>
+    </div>
+    <div class="col-md-7">
+        @Html.TextAreaFor(m => m.CommentText, new { @class = "form-control", placeholder = "نظر شما " , id="CommentText"})
+        @Html.ValidationMessageFor(m => m.CommentText, "", new { @class = "text-danger" })
+        <input class="btn btn-primary" id="subBtn" value="ثبت دیدگاه" type="submit">
+
+    </div>
+
+    <div class="clearfix"></div>
+
+}
+

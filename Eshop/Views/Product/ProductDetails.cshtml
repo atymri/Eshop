@@ -1,0 +1,147 @@
+﻿@using DataLayer
+@using Eshop.ViewModels
+@using MoreLinq
+@model DataLayer.Products
+
+@{
+    ViewBag.Title = @Model.ProductTitle;
+    Layout = "/Views/Shared/_DefaultLayout.cshtml";
+}
+
+<section class="single-page">
+    <header><h3> @Model.ProductTitle </h3></header>
+    <article>
+        <!-- Detail -->
+        <div class="col-md-8 col-sm-12 col-xs-12 pull-left detail-product">
+            <div>
+                <span> قیمت : @Model.ProductPrice.ToString("#,0") تومان </span>
+                <button onclick="addToCart(@Model.ProductID)" class="add-to-card-link border-radius"> افزودن به سبد خرید </button>
+            </div>
+            <p>
+                @Model.ProductDescription
+            </p>
+        </div>
+        <!-- End Detail -->
+        <!-- Gallery -->
+        <div class="col-md-4 col-sm-12 col-xs-12 pull-right product-gallery">
+            <div class="large-image border-radius">
+                <img class="border-radius" src="/Images/ProductImages/@Model.ProductImage">
+            </div>
+            @if (Model.ProductGalleries.Any())
+            {
+                <div class="thumbnails-image">
+                    <div class="row">
+                        @foreach (var item in Model.ProductGalleries)
+                        {
+                            <div class="col-md-3 col-sm-3 col-xs-4 border-radius">
+                                <img class="border-radius" alt="@item.Title" src="/Images/ProductImages/@item.Image">
+                            </div>
+
+                        }
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            }
+        </div>
+        <!-- End Gallery -->
+        <div class="clearfix"></div>
+    </article>
+</section>
+<div class="tabs-product margin-top-25">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#main-content"> توضیحات کامل </a></li>
+        <li><a data-toggle="tab" href="#properties"> ویژگی ها </a></li>
+        <li><a data-toggle="tab" href="#comments"> نظرات کاربران </a></li>
+    </ul>
+
+    <div class="tab-content ">
+
+        <!-- description -->
+        <div id="main-content" class="tab-pane fade in active">
+
+            @Html.Raw(Model.ProductText)
+
+        </div>
+        <!-- End description -->
+        <!-- Chart -->
+        <div id="properties" class="tab-pane fade">
+            <h3> ویژگی های محصول : </h3>
+            @{
+                List<SingleProductViewModel> features = ViewBag.Features;
+
+                if (features.Any())
+                {
+                    <ul>
+                        @foreach (var feature in features)
+                        {
+                            <li>
+                                @feature.FeatureTitle : @(feature.Values != null && feature.Values.Any() ? String.Join(", ", feature.Values) : "ندارد")
+                            </li>
+                        }
+                    </ul>
+
+                }
+                else
+                {
+                    <h2 class="text text-danger">ویژگی برای این محصول وجود ندارد</h2>
+                }
+
+            }
+
+
+        </div>
+        <!-- End Chart -->
+        <!-- Comment -->
+        <div id="comments" class="tab-pane fade active in">
+            <div class="comment-layer" id="target">
+                @Html.Action("AddComment", "Product")
+                <ul class="comment-list" id="CommentsList">
+                    @Html.Action("ShowComment", "Product")
+                </ul>
+            </div>
+
+        </div>
+        <!-- End Comment -->
+
+
+
+    </div>
+</div>
+@if (Model.ProductTags.Any())
+{
+
+    <section class="border-radius tags-layer">
+        @foreach (var item in Model.ProductTags)
+        {
+            <a href="/Search/Index?q=@item.Tag">@item.Tag</a>
+        }
+
+    </section>
+}
+
+@section Scripts {
+    <script>
+
+      
+        function SuccessComment() {
+            $("#Name").val('');
+            $("#Email").val('');
+            $("#Website").val('');
+            $("#CommentText").val('');
+            $("#ParentID").val('');
+            $("#subBtn").val("ثبت دیدگاه");
+
+
+        }
+
+        function Reply(id, name) {
+            $("#ParentID").val(id);
+            $("#subBtn").val("پاسخ به " + name);
+            // scrolling to the comment section using animation
+            $('html, body').animate({
+                scrollTop: $('#target').offset().top
+            }, 1000);
+
+        }
+    </script>
+}

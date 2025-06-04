@@ -1,0 +1,117 @@
+﻿@using DataLayer
+@model IEnumerable<DataLayer.Products>
+
+@{
+    ViewBag.Title = "آرشیو محصولات";
+}
+
+
+@section Filter{
+
+    <section class="border-radius basket-side">
+        <header>
+            <h3> فیلتر محصولات </h3>
+        </header>
+        <article>
+            <form method="get" action="/Archive" id="archiveForm">
+                <input type="hidden" name="pageNum" value="@ViewBag.PageNumebr" id="pageNum" />
+                <ul>
+                    <li>
+                        <label>عنوان محصول</label>
+                        <input style="width: 100% !important" type="text" name="t" value="@ViewBag.ProductTitle" class="form-control"/>
+                    </li>
+                    <li>
+                        <label>حداقل قیمت</label>
+                        <input type="number" value="@ViewBag.MinPrice" min="0" name="mp" class="form-control"/>
+                    </li>
+                    <li>
+                        <label>حداکثر قیمت</label>
+                        <input type="number" value="@ViewBag.MaxPrice" min="0" name="xp" class="form-control"/>
+                    </li>
+                    <li>
+                        <label>گروه های محصول</label>
+                        @{
+                            var groups = ViewBag.Groups as List<ProductGroups>;
+                            List<int> selectedGroups = ViewBag.SelectedGroups ?? new List<int>();
+
+                            <ul>
+                                @foreach (var item in groups.Where(g => g.ParentID == null))
+                                {
+                                    <li>
+                                        @item.GroupTitle <input type="checkbox" @(selectedGroups.Any(g => g == item.GroupID) ? "checked" : "") name="g" value="@item.GroupID"/>
+                                        @if (groups.Any(g => g.ParentID == item.GroupID))
+                                        {
+                                            <ol>
+                                                @foreach (var item2 in groups.Where(g => g.ParentID == item.GroupID))
+                                                {
+                                                    <li>
+                                                        @item2.GroupTitle
+                                                        <input type="checkbox" @(selectedGroups.Any(g => g == item2.GroupID) ? "checked" : "") name="g" value="@item2.GroupID"/>
+                                                    </li>
+                                                }
+                                            </ol>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </li>
+                    <li>
+                        <input type="submit" value="اعمال" style="width: 100%"/>
+                    </li>
+                </ul>
+            </form>
+        </article>
+    </section>
+
+}
+<!--End of section 'Filter'-->
+
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning">
+        <h2 class="alert-warning">محصولی وجود ندارد!</h2>
+    </div>
+}
+else
+{
+    <section class="last-products">
+        <header><h3> جدیدترین محصولات </h3></header>
+        <article>
+
+            @foreach (var product in Model)
+            {
+                @Html.Partial("_Product", product)
+            }
+            <div class="clearfix"></div>
+        </article>
+    </section>
+}
+
+
+
+
+@if (ViewBag.PageCount > 1)
+{
+    <ul class="pagination">
+        @for (int i = 1; i <= ViewBag.PageCount; i++)
+        {
+            <li><a onclick="pagination(@i)">@i</a></li>
+        }
+    </ul>
+
+}
+
+@section Scripts{
+    
+    <script>
+
+        function pagination(pageNum) {
+            $("#pageNum").val(pageNum);
+            $("#archiveForm").submit();
+        }
+
+    </script>
+
+}

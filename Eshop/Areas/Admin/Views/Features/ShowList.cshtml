@@ -1,0 +1,62 @@
+﻿@using System.Activities.Statements
+@using DataLayer
+@model IEnumerable<DataLayer.ProductGroups>
+
+@{
+    Layout = null;
+}
+<hr />
+
+@if (!Model.Any())
+{
+    <center>
+        <div class="alert alert-warning" style="border: 1px solid #ffc107; background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; width: fit-content; margin-top: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <p style="font-size: 16px; font-weight: bold; margin: 0;">ویژگی وجود ندارد</p>
+        </div>
+    </center>
+}
+else
+{
+    //var groupedFeatures = Model.GroupBy(m => m.ProductGroups.GroupTitle);
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th style="direction: rtl; text-align: right;">
+                    عنوان گروه
+                </th>
+                <th style="direction: rtl; text-align: right;">
+                    ویژگی ها
+                </th>
+                @*<th style="direction: rtl; text-align: right;"></th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var group in Model)
+            {
+                <tr id="group_@group.GroupID">
+                    <td style="direction: rtl; text-align: right;">@group.GroupTitle</td>
+                    <td style="direction: rtl; text-align: right;">
+                      
+                            <ul style="direction: rtl; text-align: right; list-style-type: none; padding: 0;">
+                                @foreach (var feature in group.Features)
+                                {
+                                    <li id="feature_@feature.FeatureID" style="width: 40%;">@feature.FeatureName - <a onclick="DeleteSingleFeature(@feature.FeatureID)" class="btn text-danger btn-xs">حذف</a></li>
+                                }
+                            </ul>
+                        
+
+                    </td>
+                    @*<td style="direction: rtl; text-align: right;"></td>*@
+                    <td>
+                        <a onclick="DeleteGroupFeature('@group.GroupID')" class="btn btn-danger btn-sm">حذف همه ویژگی ها</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@* href="/Admin/Features/Delete?G=@group.GroupTitle" *@
+@*href="/Admin/Features/Delete?F=@feature.FeatureID"*@

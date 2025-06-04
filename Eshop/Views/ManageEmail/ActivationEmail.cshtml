@@ -1,0 +1,10 @@
+﻿@model DataLayer.Users
+@using System.Configuration;
+
+
+<div style="direction: rtl; font-family: Arial;">
+
+    <h2>@Model.UserName عزیز </h2>
+    <p>برای تکمیل فرایند ثبت نام در سایت Eshop لطفا روی <a href="@ConfigurationManager.AppSettings["MyDomain"]/Account/ActiveAccount/@Model.ActiceCode">فعالسازی </a> کلیک کنید.</p>
+
+</div>

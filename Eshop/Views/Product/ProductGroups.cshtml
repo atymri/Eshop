@@ -1,0 +1,32 @@
+﻿
+@using DataLayer
+@model IEnumerable<DataLayer.ProductGroups>
+
+
+<section class="border-radius category-side">
+    <header><h3> دسته بندی ها </h3></header>
+    <article>
+        @{
+            var products = ViewBag.Products as List<Products>;
+        }
+        @foreach (var Group in Model.Where(g => g.ParentID == null))
+        {
+            <ul class="category-menu">
+                <li>
+                    <h2><a href="/Archive?g=@Group.GroupID">@Group.GroupTitle</a></h2>
+                    <ul class="child-category-menu">
+                        @foreach (var SubGroup in Model.Where(g => g.ParentID == Group.GroupID))
+                        {
+
+                            <li>
+                                <h2><a href="/Archive?g=@SubGroup.GroupID">@SubGroup.GroupTitle</a> <span>(@products.Where(p=>p.SelectedProductGruop.Any(g=>g.GroupID == SubGroup.GroupID)).Count())</span></h2>
+                            </li>
+
+                        }
+                    </ul>
+                </li>
+            </ul>
+
+        }
+    </article>
+</section>

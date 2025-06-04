@@ -1,0 +1,157 @@
+﻿@using System.Collections.Specialized
+@using DataLayer
+@model DataLayer.Products
+
+@{
+    ViewBag.Title = "افزودن محصول";
+}
+
+<h2>افزودن کالای جدید</h2>
+<div class="row">
+
+    @using (Html.BeginForm("Create", "Products", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+            <div class="col-md-8">
+                <hr />
+
+                @if (ViewBag.Error == true)
+                {
+                    <div class="text text-danger">
+                        <h4>گروهی برای محصول انتخاب نشده!</h4>
+                    </div>
+                }
+
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ProductTitle, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.ProductTitle, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProductTitle, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ProductDescription, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.ProductDescription, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProductDescription, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ProductText, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.ProductText, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProductText, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ProductPrice, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.ProductPrice, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProductPrice, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">کلمات کلیدی</label>
+                        <input type="text" placeholder="لطفا کلمات کلیدی را با کاما (,) از هم جدا کنید" name="keywords" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="ثبت" class="btn btn-success" style="width: 100px" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">انتخاب تصویر</div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <img src="~/Images/ProductImages/images.png" id="Image" class="thumbnail thumbnails-image" />
+                            </div>
+                            <input type="file" name="ProductImage" class="form-group" accept="image/*" onchange="UpdatePreview(event)" />
+                            @Html.ValidationMessageFor(model => model.ProductImage, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">انتخاب گروه</div>
+                    <div class="panel-body">
+                        @{
+                            List<ProductGroups> groups = ViewBag.Groups;
+                            foreach (var item in groups.Where(g => g.ParentID == null))
+                            {
+                                <ul>
+                                    <li>@item.GroupTitle <input type="checkbox" value="@item.GroupID" name="ProductGroups" /></li>
+                                    @if (groups.Any(g => g.ParentID == item.GroupID))
+                                    {
+                                        <ul>
+                                            @foreach (var item2 in groups.Where(g => g.ParentID == item.GroupID))
+                                            {
+                                                <li>@item2.GroupTitle <input type="checkbox" value="@item2.GroupID" name="ProductGroups" /></li>
+                                            }
+                                        </ul>
+                                    }
+                                </ul>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+    <script src="/ckeditor/ckeditor.js"></script>
+    <script src="/ckeditor/adapters/jquery.js"></script>
+    <script>
+        function UpdatePreview(event) {
+            const input = event.target;
+            const file = input.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const img = document.getElementById('Image');
+                img.src = e.target.result;
+                img.onload = function () {
+                    // Resize the image to fit within the panel
+                    const maxWidth = 200; // set your desired width
+                    const maxHeight = 200; // set your desired height
+
+                    if (img.width > maxWidth || img.height > maxHeight) {
+                        const ratio = Math.min(maxWidth / img.width, maxHeight / img.height);
+                        img.width = img.width * ratio;
+                        img.height = img.height * ratio;
+                    }
+                };
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+
+        // enabling the html editor
+        $(function () {
+            $('#ProductText').ckeditor();
+        });
+    </script>
+}
+
+@section Style{
+    <style>
+        .thumbnail {
+            max-width: 100%;
+            max-height: 200px; /* set your desired max height */
+            width: auto;
+            height: auto;
+        }
+
+        .form-control {
+            width: 80%;
+        }
+    </style>
+}

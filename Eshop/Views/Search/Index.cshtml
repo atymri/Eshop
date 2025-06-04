@@ -1,0 +1,30 @@
+﻿@model IEnumerable<DataLayer.Products>
+
+@{
+    ViewBag.Title = ViewBag.q;
+}
+
+
+@if (Model.Any())
+{
+    <section class="last-products">
+        <header><h3> تعداد @Model.Count() محصول برای '@ViewBag.q' پیدا شد</h3></header>
+        <article>
+
+            @foreach (var item in Model)
+            {
+                @Html.Partial("_Product", item)
+            }
+
+            <div class="clearfix"></div>
+        </article>
+    </section>
+}
+else
+{
+
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">نتیجه ای برای '@ViewBag.q' وجود نداشت</h4>
+        <p>برای جستجوی بهتر و دقیق تر ، توضیحات را حذف كرده و فقط نام محصول را جستجو كنید.</p>
+    </div>
+}

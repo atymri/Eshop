@@ -1,0 +1,64 @@
+﻿@using DataLayer
+@model IEnumerable<Eshop.ViewModels.CompareItemViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    var features = ViewBag.Features as List<Features>;
+    var featureValues = ViewBag.ProductFeatures as List<ProductFeatures>;
+}
+
+<h1>مقایسه محصولات</h1>
+<br />
+
+@if (Model.Any())
+{
+    <table class="table table-bordered table-responsive">
+        <thead>
+            <tr>
+                <th>محصول</th>
+                @foreach (var item in Model)
+                {
+                    <th>
+                        <a class="btn btn-link" href="/Product/ProductDetails/@item.ProductId">
+                            @item.ProductTitle
+                        </a>
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>تصویر</td>
+                @foreach (var item in Model)
+                {
+                    <td>
+                        <img style="width: 200px; height: 200px;" class="thumbnail" src="/Images/ProductImages/Thumbnails/@item.ProductImageName" />
+                    </td>
+                }
+            </tr>
+
+            @if (features != null && featureValues != null)
+            {
+                foreach (var feature in features)
+                {
+                    <tr>
+                        <td>@feature.FeatureName</td>
+                        @foreach (var item in Model)
+                        {
+                            var value = featureValues
+                                .Where(f => f.FeatureID == feature.FeatureID && f.ProductID == item.ProductId).Select(f => f.Value);
+
+                            var res = value.Any() ? string.Join("-", value) : "ندارد";
+                            var color = res == "ندارد" ? "red" : "darkgreen";
+                            <td style="color: @color">@res</td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>هیچ محصولی برای مقایسه وجود ندارد.</p>
+}

@@ -1,0 +1,69 @@
+﻿@model IEnumerable<DataLayer.ProductGroups>
+
+@if (!Model.ToList().Any())
+{
+    <center>
+        <div class="alert alert-warning" style="border: 1px solid #ffc107; background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; width: fit-content; margin-top: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <p style="font-size: 16px; font-weight: bold; margin: 0;">گروهی وجود ندارد</p>
+        </div>
+    </center>
+
+
+}
+else
+{
+
+    <table class="table table-bordered">
+        <tr>
+            <th>
+                گروه ها
+            </th>
+            <th>
+                زیر گروه ها
+            </th>
+            <th>
+            </th>
+        </tr>
+
+
+
+        @foreach (var item in Model)
+        {
+            <tr id="groupID_@(item.GroupID)">
+                <td>
+                    @Html.DisplayFor(modelItem => item.GroupTitle)
+                </td>
+                <td>
+                    @if (item.ProductGroups1.Any())
+                    {
+                        <ul>
+                            @foreach (var item2 in item.ProductGroups1)
+                            {
+                                <li id="groupID_@(item2.GroupID)">
+                                    @item2.GroupTitle
+                                    -
+                                    <a class="label label-primary" onclick="Edit(@item2.GroupID)">@*<span class="glyphicon glyphicon-edit"></span>*@ویرایش</a> |
+                                    <a class="label label-danger" onclick="Delete(@item2.GroupID)">@*<span class="glyphicon glyphicon-trash"></span>*@حذف</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="label label-warning">زیر گروهی برای @item.GroupTitle وجود ندارد</p>
+                    }
+                </td>
+                <td>
+                    @* @Html.ActionLink("Edit", "Edit", new { id=item.GroupID }) |
+                @Html.ActionLink("Details", "Details", new { id=item.GroupID }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.GroupID }) *@
+                    <a class="btn btn-default btn-xs" onclick="Create(@item.GroupID)">@*<span class="glyphicon glyphicon-plus"></span>*@افزودن زیرگروه</a>
+                    <a class="btn btn-primary btn-xs" onclick="Edit(@item.GroupID)">@*<span class="glyphicon glyphicon-edit"></span>*@ویرایش گروه</a>
+                    <a class="btn btn-danger btn-xs" onclick="Delete(@item.GroupID)">@*<span class="glyphicon glyphicon-trash"></span>*@حذف گروه</a>
+                </td>
+            </tr>
+        }
+
+
+    </table>
+}

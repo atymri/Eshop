@@ -1,0 +1,85 @@
+﻿@using System.Collections.Specialized
+@model IEnumerable<DataLayer.ProductGroups>
+
+@{
+    ViewBag.Title = "مدیریت گروه ها";
+}
+
+<h2>مدیریت گروه ها</h2>
+
+<p>
+    <a class="btn btn-success" onclick="Create()">افزودن گروه جدید</a>
+</p>
+
+<div id="List">
+    @Html.Action("ShowList")
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                
+            </div>
+            <div class="modal-body" id="exampleModalBody">
+                
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function Create(id) {
+        $.get('/Admin/ProductGroups/Create/' + id,
+            function (res) {
+                $("#exampleModal").modal('show');
+                $("#exampleModalLabel").html('افزودن گروه جدید');
+                $("#exampleModalBody").html(res);
+            });
+    }
+
+    function Edit(id) {
+        $.get('/Admin/ProductGroups/Edit/' + id,
+            function(res) {
+                $("#exampleModal").modal('show');
+                $("#exampleModalLabel").html('ویرایش گروه');
+                $("#exampleModalBody").html(res);
+            });
+    }
+    function Delete(id) {
+        Swal.fire({
+            title: 'از حذف گروه اطمینان دارید؟',
+            //text: 'تمامی زیر گروه ها نیز حذف خواهند شد',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'بله، حذف شود',
+            cancelButtonText: 'لغو',
+            customClass: {
+                confirmButton: 'btn btn-danger',
+                cancelButton: 'btn btn-secondary'
+            },
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.get('/Admin/ProductGroups/Delete/' + id, function() {
+                    $("#groupID_" + id).hide('slow');
+                    Swal.fire({
+                        title: 'حذف شد!',
+                        text: 'گروه با موفقیت حذف شد.',
+                        icon: 'success',
+                        confirmButtonText: 'باشه'
+                    });
+                });
+            }
+        });
+    }
+
+
+    function Success() {
+        $("#exampleModal").modal('hide');
+    }
+</script>

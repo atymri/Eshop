@@ -1,0 +1,64 @@
+﻿@model IEnumerable<DataLayer.Slider>
+
+@{
+    ViewBag.Title = "مدیریت اسلاید ها";
+}
+
+<h2>اسلاید ها</h2>
+
+<p>
+    @Html.ActionLink("افزودن اسلاید جدید", "Create")
+</p>
+
+@if (!Model.ToList().Any())
+{
+    <center>
+        <div class="alert alert-warning" style="border: 1px solid #ffc107; background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; width: fit-content; margin-top: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <p style="font-size: 16px; font-weight: bold; margin: 0;">اسلایدری وجود ندارد</p>
+        </div>
+    </center>
+}
+else
+{
+    
+    <table class="table table-bordered">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @item.StartDate.ToString("yyyy/MM/dd")
+                </td>
+                <td>
+                    @item.EndDate.ToString("yyyy/MM/dd")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id=item.SliderId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id=item.SliderId })
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+

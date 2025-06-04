@@ -1,0 +1,141 @@
+﻿@using Eshop.Utilities
+@model IEnumerable<DataLayer.Products>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>مدیریت محصولات</h2>
+
+
+@if (!Model.ToList().Any())
+{
+    <center>
+        <div class="alert alert-warning" style="border: 1px solid #ffc107; background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; width: fit-content; margin-top: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <p style="font-size: 16px; font-weight: bold; margin: 0;">محصولی وجود ندارد</p>
+        </div>
+    </center>
+}
+else
+{
+
+    <table class="table table-striped table-bordered" style="direction: rtl;">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductImage)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductTitle)
+                </th>
+                <th>
+                    گروه های این محصول
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductPrice)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductCreateDate)
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr id="product_@item.ProductID">
+                    <td style="padding: 0; width: 150px; height: 150px; align-content: center;">
+                        <img class="thumbnail img-thumbnail" src="/Images/ProductImages/Thumbnails/@item.ProductImage" alt="@item.ProductTitle" style="max-width: 100%; height: auto; display: block; margin: auto;" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductTitle)
+                    </td>
+                    <td>
+                        @if (item.SelectedProductGruop.Any())
+                        {
+                            <ol>
+                                @foreach (var group in item.SelectedProductGruop)
+                                {
+                                    <li>@group.ProductGroups.GroupTitle</li>
+                                }
+                            </ol>
+                        }
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor(modelItem => item.ProductPrice)*@
+                        @item.ProductPrice.ToString("#,0") تومان
+                    </td>
+                    <td>
+                        @item.ProductCreateDate.ToShamsi() 
+                    </td>
+                    <td width="30%">
+                        <a href="/Admin/Products/AddFeatureForProduct?ProductID=@item.ProductID" target="blank" class="btn btn-default btn-xs">ویژگی های محصول</a>
+                        <a href="@Url.Action("ProductGallery", new {id = item.ProductID})" target="blank" class="btn btn-warning btn-xs">گالری محصول</a>
+                        <a href="@Url.Action("Edit", new {id = item.ProductID})"  class="btn btn-primary btn-xs">ویرایش محصول</a>
+                        <a @*href="@Url.Action("Delete", new {id = item.ProductID})"*@ onclick="DeleteProduct(@item.ProductID)" class="btn btn-danger btn-xs">حذف محصول</a>
+
+                    </td>
+                </tr>
+            }
+
+
+        </tbody>
+    </table>
+}
+
+
+<style>
+    th, td {
+        text-align: right;
+        vertical-align: middle;
+        font-size: 15px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    .table img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: auto;
+    }
+</style>
+
+
+@section Scripts
+{
+    
+    <script>
+
+        function DeleteProduct(id) {
+
+            if (confirm("از حذف محصول مطمعن هستید؟!")) {
+
+                $.ajax({
+
+                    url: "/Admin/Products/Delete",
+                    type: "post",
+                    data: { id: id },
+                    success: function (res) {
+                        $("#product_" + id).hide('slow');
+                    },
+                    error: function(res) {
+                        alert(res.error);
+                    }
+
+                });
+
+            }
+
+
+        }
+
+
+    </script>
+
+}

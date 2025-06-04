@@ -1,0 +1,84 @@
+﻿
+@using DataLayer
+@model DataLayer.ProductGalleries
+
+@{
+    ViewBag.Title = "ProductGallery";
+}
+
+<h2>گالری تصاویر</h2>
+
+@using (Html.BeginForm("ProductGallery", "Products", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ProductID)
+    <div class="row">
+        <div class="col-md-4 pull-right">
+            <div class="form-horizontal">
+                <hr />
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", style = "width: 250px;" } })
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "control-label" })
+                    <input type="file" name="Image" style="width: 250px;" />
+                    @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="افزودن" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            @{
+                List<ProductGalleries> galleries = ViewBag.Gallerie;
+                if (!galleries.Any())
+                {
+                    <center>
+                        <div class="alert alert-warning" style="border: 1px solid #ffc107; background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; width: fit-content; margin-top: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                            <p style="font-size: 16px; font-weight: bold; margin: 0;">تصاویر بیشتری برای این محصول وجود ندارد</p>
+                        </div>
+                    </center>
+                }
+                else
+                {
+                    <table class="table table-striped table-bordered" style="direction: rtl;">
+                        <thead>
+                            <tr>
+                                <th style="text-align: right;">عنوان</th>
+                                <th style="text-align: right;">تصویر</th>
+                                <th style="text-align: right;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var photo in galleries)
+                            {
+                                <tr>
+                                    <td>@photo.Title</td>
+                                    <td>
+                                        <img src="/Images/ProductImages/Thumbnails/@photo.Image" class="thumbnail" />
+                                    </td>
+                                    <td>
+                                        <a href="/Admin/Products/DeleteGallery?galleryId=@photo.GalleryID" class="btn btn-danger btn-sm">حذف</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+            }
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("بازگشت به لیست", "Index")
+</div>

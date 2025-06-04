@@ -1,0 +1,118 @@
+﻿@using CaptchaMvc.HtmlHelpers
+@model Eshop.ViewModels.RegisterViewModel
+
+@{
+    ViewBag.Title = "عضویت در سایت";
+}
+
+@*<h2>ثبت نام</h2>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post)) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+    
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RePassword, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RePassword, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RePassword, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="ثبت نام" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+}*@
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="alert alert-warning">
+        <p>کاربر گرامی, عضویت نام شما قبلا در سایت انجام شده</p>
+        @Html.ActionLink("بازگشت به صفحه اصلی", "Index", "Home")
+    </div>
+}
+else
+{
+    <div class="col-md-9 col-sm-8 left-side-content internal-style">
+
+        <section class="border-radius">
+            <header><h3> عضویت در سایت </h3></header>
+            <article>
+                <div class="col-md-10 col-sm-10 col-xs-12">
+
+                    <form method="post" action=@Url.Action("Register", "Account")>
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="نام کاربری " name="UserName">
+                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder=" ایمیل " name="Email">
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="رمز عبور" name="Password">
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="تکرار رمز عبور " name="RePassword">
+                            @Html.ValidationMessageFor(model => model.RePassword, "", new { @class = "text-danger" })
+                        </div>
+                        @*<label><input type="checkbox"> قوانین را میپذیرم  </label>*@
+
+
+
+                        @Html.MathCaptcha("", "پاسخ صحیح را وارد کنید")
+                        @if (ViewBag.Error != null)
+                        {
+                            <div class="alert alert-danger">
+                                <p>
+                                    @ViewBag.Error
+                                </p>
+                            </div>
+
+                        }
+
+
+                        <input type="submit" value=" عضویت در سایت">
+                    </form>
+
+                </div>
+                <div class="clearfix"></div>
+            </article>
+        </section>
+                
+    </div>
+}
+
